@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.adolfo.test.gs.bussineslogic.entities.Empleado;
 import com.adolfo.test.gs.bussineslogic.entities.Movimiento;
@@ -26,6 +27,7 @@ public class EmpleadosServiceImpl implements EmpleadosService {
     private MovimientoRepository movimientoRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<?> saldo(Long id) {
         Optional<Empleado> empleado = empleadoRepository.findById(id);
 
@@ -37,6 +39,7 @@ public class EmpleadosServiceImpl implements EmpleadosService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<?> history(Long id) {
         Optional<Empleado> empleado = empleadoRepository.findById(id);
 
