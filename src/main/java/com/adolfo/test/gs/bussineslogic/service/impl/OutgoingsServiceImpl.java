@@ -54,11 +54,11 @@ public class OutgoingsServiceImpl implements OutgoingsService {
                 } else {
                     throw new ForbiddenException("¡El empleado no puede entregar la cantidad de dinero indicada!");
                 }
+            } else {
+                throw new ForbiddenException("¡El empleado no puede entregar la cantidad de dinero indicada!");
             }
         } else {
             throw new NotFoundException("¡El empleado no existe!");
         }
-
-        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
