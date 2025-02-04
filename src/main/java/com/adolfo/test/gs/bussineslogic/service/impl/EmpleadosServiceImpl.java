@@ -1,5 +1,6 @@
 package com.adolfo.test.gs.bussineslogic.service.impl;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class EmpleadosServiceImpl implements EmpleadosService {
         Optional<Empleado> empleado = empleadoRepository.findById(id);
 
         if (empleado.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(empleado.get().getSaldoActual());
+            return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("saldoActual", empleado.get().getSaldoActual()));
         } else {
             throw new NotFoundException("¡El empleado no existe!");
         }
