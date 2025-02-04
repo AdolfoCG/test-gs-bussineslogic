@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.adolfo.test.gs.bussineslogic.entities.Empleado;
 import com.adolfo.test.gs.bussineslogic.entities.Movimiento;
 import com.adolfo.test.gs.bussineslogic.exceptions.NotFoundException;
+import com.adolfo.test.gs.bussineslogic.exceptions.RepositoryException;
 import com.adolfo.test.gs.bussineslogic.repositories.EmpleadoRepository;
 import com.adolfo.test.gs.bussineslogic.repositories.MovimientoRepository;
 import com.adolfo.test.gs.bussineslogic.service.EmpleadosService;
@@ -30,31 +31,39 @@ public class EmpleadosServiceImpl implements EmpleadosService {
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<?> saldo(Long id) {
-        Optional<Empleado> empleado = empleadoRepository.findById(id);
-
-        if (empleado.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("saldoActual", empleado.get().getSaldoActual()));
-        } else {
-            throw new NotFoundException("¡El empleado no existe!");
+        try {
+            Optional<Empleado> empleado = empleadoRepository.findById(id);
+    
+            if (empleado.isPresent()) {
+                return ResponseEntity.status(HttpStatus.OK).body(Collections.singletonMap("saldoActual", empleado.get().getSaldoActual()));
+            } else {
+                throw new NotFoundException("¡El empleado no existe!");
+            }
+        } catch (RepositoryException e) {
+            throw new RepositoryException("Error en base de datos: " + e);
         }
     }
 
     @Override
     @Transactional(readOnly = true)
     public ResponseEntity<?> history(Long id) {
-        Optional<Empleado> empleado = empleadoRepository.findById(id);
-
-        if (!empleado.isPresent()) {
-            throw new NotFoundException("¡El empleado no existe!");
+        try {
+            Optional<Empleado> empleado = empleadoRepository.findById(id);
+    
+            if (!empleado.isPresent()) {
+                throw new NotFoundException("¡El empleado no existe!");
+            }
+    
+            List<Movimiento> movimientos = movimientoRepository.findAllByIdEmpleado(empleado.get());
+    
+            if (movimientos.isEmpty()) {
+                throw new NotFoundException("No se encontraron movimientos");
+            }
+    
+            return ResponseEntity.status(HttpStatus.OK).body(movimientos);
+        } catch (RepositoryException e) {
+            throw new RepositoryException("Error en base de datos: " + e);
         }
-
-        List<Movimiento> movimientos = movimientoRepository.findAllByIdEmpleado(empleado.get());
-
-        if (movimientos.isEmpty()) {
-            throw new NotFoundException("No se encontraron movimientos");
-        }
-
-        return ResponseEntity.status(HttpStatus.OK).body(movimientos);
     }
 
 }

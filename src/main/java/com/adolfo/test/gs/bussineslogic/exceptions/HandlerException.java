@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -74,6 +75,17 @@ public class HandlerException {
         error.put("message", "La URL solicitada no existe.");
         error.put("status", HttpStatus.NOT_FOUND.value());
         return error;
+    }
+
+    @ExceptionHandler(value = { DataAccessException.class })
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public Map<String, Object> handleRepositoryException(DataAccessException ex) {
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("date", new Date());
+        errorResponse.put("error", "Error en base de datos");
+        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        return errorResponse;
     }
 
 }
