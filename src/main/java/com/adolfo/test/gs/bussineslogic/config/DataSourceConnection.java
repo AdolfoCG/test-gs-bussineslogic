@@ -20,7 +20,7 @@ import jakarta.persistence.EntityManagerFactory;
 
 @Configuration
 @EnableJpaRepositories(
-    basePackages = "com.adolfo.test.gs.incomes.repositories",
+    basePackages = "com.adolfo.test.gs.bussineslogic.repositories",
     entityManagerFactoryRef = "datasourceEntityManagerFactory",
     transactionManagerRef = "datasourceTransactionManager"
 )
@@ -45,7 +45,7 @@ public class DataSourceConnection {
         return builder
             .dataSource(dataSource)
             .properties(properties)
-            .packages("com.adolfo.test.gs.incomes.entities")
+            .packages("com.adolfo.test.gs.bussineslogic.entities")
             .persistenceUnit("datasource")
             .build();
     }
